@@ -3,7 +3,9 @@ package org.example;
 public class VigenereCipher {
 
     private final char[] basicAlphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-
+    private final int asciiStart = 32;
+    private final int asciiEnd = 126;
+    private final int asciiRange = asciiEnd - asciiStart + 1;
 
 
     private int getAlphabetIndex (char ch){
@@ -48,6 +50,32 @@ public class VigenereCipher {
         return encResult.toString();
 
     }
+    //ASCII
+    String encryptAscii(String word, String key){
+
+        int keyIndex = 0;
+        StringBuilder encResult = new StringBuilder();
+
+        for(int i = 0; i < word.length(); i++){
+            char currentWordChar = word.charAt(i);
+            int keyPosition = keyIndex % key.length();
+            char currentKeyChar = key.charAt(keyPosition);
+
+            int mi = currentWordChar - asciiStart;
+            int ki = currentKeyChar - asciiStart;
+
+            if(currentWordChar >= asciiStart && currentWordChar <= asciiEnd) {
+
+                int ci = (mi + ki) % asciiRange;
+                char encryptedChar = (char) (ci + asciiStart);
+                encResult.append(encryptedChar);
+                keyIndex++;
+            }else{encResult.append(currentWordChar);}
+
+        }
+
+        return encResult.toString();
+    }
 
 
     //dešifravimo metodas
@@ -78,6 +106,33 @@ public class VigenereCipher {
                 decResult.append(decryptedChar);
                 keyIndex++;
             }
+        }
+
+        return decResult.toString();
+    }
+
+    //ASCII
+    String decryptAscii(String word, String key){
+
+        int keyIndex = 0;
+        StringBuilder decResult = new StringBuilder();
+
+        for(int i = 0; i < word.length(); i++){
+            char currentWordChar = word.charAt(i);
+            int keyPosition = keyIndex % key.length();
+            char currentKeyChar = key.charAt(keyPosition);
+
+            int ci = currentWordChar - asciiStart;
+            int ki = currentKeyChar - asciiStart;
+
+            if(currentWordChar >= asciiStart && currentWordChar <= asciiEnd) {
+
+                int mi = (ci - ki + asciiRange) % asciiRange;
+                char decryptedChar = (char) (mi + asciiStart);
+                decResult.append(decryptedChar);
+                keyIndex++;
+            }else {decResult.append(currentWordChar);}
+
         }
 
         return decResult.toString();
