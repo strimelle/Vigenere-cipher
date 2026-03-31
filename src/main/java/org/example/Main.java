@@ -9,5 +9,8 @@ public class Main {
         SwingUtilities.invokeLater(VigenereUI::new);
 
 
+
     }
 }
+
+

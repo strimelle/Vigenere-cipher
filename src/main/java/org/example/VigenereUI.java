@@ -10,6 +10,10 @@ public class VigenereUI extends JFrame {
     private final JTextField keyField = new JTextField(15);
     private final JButton encryptBtn = new JButton("ENCRYPT");
     private final JButton decryptBtn = new JButton("DECRYPT");
+    private final JLabel messageLabel = new JLabel("");
+    private final ButtonGroup modeGroup = new ButtonGroup();
+    private final JRadioButton basic = new JRadioButton("BASIC");
+    private final JRadioButton ascii = new JRadioButton("ASCII");
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
 
@@ -36,13 +40,14 @@ public class VigenereUI extends JFrame {
         createInputSection();
         createButtonSection();
         createResultSection();
+        createModeSection();
         setupButtonActions();
+
 
         setContentPane(panel);
         setVisible(true);
 
     }
-
     void createTitleSection(){
 
         c.insets = new Insets(6, 6, 6, 6);
@@ -92,6 +97,42 @@ void createInputSection(){
     panel.add(keyField, c);
 
 }
+void createModeSection(){
+    JPanel modePanel = new JPanel(new GridBagLayout());
+    GridBagConstraints m = new GridBagConstraints();
+
+
+    c.gridy = 6;
+    c.gridx = 1;
+    c.gridwidth = 2;
+    c.anchor = GridBagConstraints.CENTER;
+
+    m.insets = new Insets(12, 6, 6, 6);
+    m.gridy = 1;
+    m.gridx = 1;
+    m.anchor = GridBagConstraints.EAST;
+    Font font = new Font("Monospaced", Font.PLAIN, 14);
+    basic.setFont(font);
+
+    modeGroup.add(basic);
+    modePanel.add(basic, m);
+
+    m.insets = new Insets(12, 6, 6, 6);
+    m.gridy = 1;
+    m.gridx = 2;
+    m.anchor = GridBagConstraints.WEST;
+    ascii.setFont(font);
+
+    modeGroup.add(ascii);
+    modePanel.add(ascii, m);
+
+    basic.setSelected(true);
+
+    panel.add(modePanel, c);
+
+
+
+}
 void createButtonSection(){
 
 
@@ -99,7 +140,7 @@ void createButtonSection(){
     GridBagConstraints d = new GridBagConstraints();
 
 
-    c.gridy = 6;
+    c.gridy = 8;
     c.gridx = 1;
     c.gridwidth = 2;
     c.anchor = GridBagConstraints.CENTER;
@@ -135,25 +176,21 @@ String getKey(){
     String key = keyField.getText().trim();
     return key;
 }
-//createResultSection() gale panel.add(messagePanel, d);
-// naudoja tuos pačius d, kurie buvo skirti vidiniam messagePanel
-// išdėstymui — reikia atskirti vidinius ir išorinius constraints.
+
 void createResultSection(){
     JPanel messagePanel = new JPanel(new GridBagLayout());
     GridBagConstraints d = new GridBagConstraints();
-
+    preferredSize(350);
     d.gridy = 10;
-    d.gridx = 1;
+    d.gridx = 0;
     d.gridwidth = 2;
     d.anchor = GridBagConstraints.CENTER;
+    clearMessage();
 
-    //message labelis yra lokalus, todėl negali
-    // jo vėliau atnaujinti klaidomis ar rezultatu.
 
-    JLabel message = new JLabel("message");
     Font font = new Font("Monospaced", Font.PLAIN, 14);
-    message.setFont(font);
-    messagePanel.add(message, d);
+    messageLabel.setFont(font);
+    messagePanel.add(messageLabel, d);
 
     panel.add(messagePanel, d);
 
@@ -163,39 +200,65 @@ void setupButtonActions(){
     encryptBtn.addActionListener(e -> handleEncrypt());
     decryptBtn.addActionListener(e -> handleDecrypt());
 }
+void getSelectedMode(){
 
-//handleEncrypt() ir handleDecrypt()
-// dabar tik iškviečia metodus, bet nieko neišsaugo į kintamuosius.
+}
+
+
 void handleEncrypt() {
-    getWord();
-    getKey();
-    //new InputValidator(); ir new VigenereCipher(); vien sukuria
-    // objektus, bet nekviečia jokių jų metodų.
-    new InputValidator();
-    new VigenereCipher();
+    clearMessage();
+    String word = getWord();
+    String key = getKey();
 
-    //handleEncrypt() turi:
-    //
-    //pasiimti word
-    //pasiimti key
-    //paleisti validaciją
-    //jei blogai → rodyti message
-    //jei gerai → kviesti šifravimą
+    InputValidator valid = new InputValidator();
+    boolean wordValid = valid.validateWord(word);
+    boolean keyValid = valid.validateKey(key);
+
+    if(!wordValid && !keyValid){
+        showMessage("Word and key are empty or invalid!");    return;}
+    else if(!wordValid){
+        showMessage("Word is empty or invalid!");    return;}
+    else if(!keyValid){
+        showMessage("Key is empty or invalid!");    return;}
+    else{VigenereCipher cipher = new VigenereCipher();
+        showMessage(cipher.encryptBasic(word, key));}
 
 
 }
 void handleDecrypt() {
-    getWord();
-    getKey();
-    //new InputValidator(); ir new VigenereCipher(); vien sukuria
-    // objektus, bet nekviečia jokių jų metodų.
-    new InputValidator();
-    new VigenereCipher();
+    clearMessage();
+    String word = getWord();
+    String key = getKey();
+
+    InputValidator valid = new InputValidator();
+    boolean wordValid = valid.validateWord(word);
+    boolean keyValid = valid.validateKey(key);
+
+    if(!wordValid && !keyValid){
+        showMessage("Word and key are empty or invalid!"); return;}
+    else if(!wordValid){
+        showMessage("Word is empty or invalid!");    return;}
+    else if(!keyValid){
+        showMessage("Key is empty or invalid!");    return;}
+    else {
+        VigenereCipher cipher = new VigenereCipher();
+        showMessage(cipher.decryptBasic(word, key));
+
+    }
+
+
 
 }
-//Trūksta metodo, kuris parodytų žinutę lange, pvz. klaidą ar rezultatą.
-//Trūksta metodo, kuris išvalytų seną žinutę prieš naują veiksmą.
+void showMessage(String text){
+        messageLabel.setText(text);
 }
+
+void clearMessage(){
+    showMessage(" ");
+}
+
+}
+
 
 
 

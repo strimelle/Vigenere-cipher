@@ -1,13 +1,16 @@
 package org.example;
-import org.example.VigenereUI;
-import javax.swing.*;
-import java.awt.*;
 
 public class InputValidator {
-
-//InputValidator klasėje dar turi atsirasti
-// validacijos metodas, kuris priima word ir key.
-
+    boolean validateWord(String word){
+        if (word != null && !word.trim().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+    boolean validateKey(String key){
+        if (key != null && !key.trim().isEmpty()){return true;}
+        return false;
+    }
 
 }
 
