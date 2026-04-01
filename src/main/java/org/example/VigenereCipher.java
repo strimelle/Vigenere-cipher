@@ -16,11 +16,9 @@ public class VigenereCipher {
         }
         return -1;
     }
-    //VigenereCipher klasėje dar turi atsirasti bent:
-//
-//šifravimo metodas
-// basic
-    String encryptBasic(String word, String key){
+
+
+    public String encryptBasic(String word, String key){
         word = word.toLowerCase();
         key = key.toLowerCase();
         int keyIndex = 0;
@@ -50,8 +48,8 @@ public class VigenereCipher {
         return encResult.toString();
 
     }
-    //ASCII
-    String encryptAscii(String word, String key){
+
+    public String encryptAscii(String word, String key){
 
         int keyIndex = 0;
         StringBuilder encResult = new StringBuilder();
@@ -78,9 +76,9 @@ public class VigenereCipher {
     }
 
 
-    //dešifravimo metodas
-//basic
-    String decryptBasic(String word, String key){
+
+
+    public String decryptBasic(String word, String key){
         word = word.toLowerCase();
         key = key.toLowerCase();
         int keyIndex = 0;
@@ -111,8 +109,8 @@ public class VigenereCipher {
         return decResult.toString();
     }
 
-    //ASCII
-    String decryptAscii(String word, String key){
+
+    public String decryptAscii(String word, String key){
 
         int keyIndex = 0;
         StringBuilder decResult = new StringBuilder();

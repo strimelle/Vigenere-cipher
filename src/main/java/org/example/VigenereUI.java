@@ -10,13 +10,12 @@ public class VigenereUI extends JFrame {
     private final JTextField keyField = new JTextField(15);
     private final JButton encryptBtn = new JButton("ENCRYPT");
     private final JButton decryptBtn = new JButton("DECRYPT");
-    private final JOptionPane error = new JOptionPane();
     private final JLabel messageLabel = new JLabel("");
     private final ButtonGroup modeGroup = new ButtonGroup();
     private final JRadioButton basic = new JRadioButton("BASIC");
     private final JRadioButton ascii = new JRadioButton("ASCII");
-    JPanel panel = new JPanel(new GridBagLayout());
-    GridBagConstraints c = new GridBagConstraints();
+    private final JPanel panel = new JPanel(new GridBagLayout());
+    private final GridBagConstraints c = new GridBagConstraints();
 
 
 
@@ -39,9 +38,9 @@ public class VigenereUI extends JFrame {
         createTitleSection();
 
         createInputSection();
+        createModeSection();
         createButtonSection();
         createResultSection();
-        createModeSection();
         setupButtonActions();
 
 
@@ -218,17 +217,20 @@ void handleEncrypt() {
     String key = getKey();
 
     InputValidator valid = new InputValidator();
+    VigenereCipher cipher = new VigenereCipher();
     boolean wordValid = valid.validateWord(word);
     boolean keyValid = valid.validateKey(key);
+    CipherMode mode = getSelectedMode();
 
     if(!wordValid && !keyValid){
-        JOptionPane.showMessageDialog(null, "Word and key are empty or invalid!");    return;}
+        JOptionPane.showMessageDialog(this, "Word and key are empty or invalid!");    return;}
     else if(!wordValid){
-        JOptionPane.showMessageDialog(null, "Word is empty or invalid!");    return;}
+        JOptionPane.showMessageDialog(this, "Word is empty or invalid!");    return;}
     else if(!keyValid){
-        JOptionPane.showMessageDialog(null, "Key is empty or invalid!");    return;}
-    else{VigenereCipher cipher = new VigenereCipher();
-        showMessage(cipher.encryptBasic(word, key));}
+        JOptionPane.showMessageDialog(this, "Key is empty or invalid!");    return;}
+    else if(mode == CipherMode.BASIC){showMessage(cipher.encryptBasic(word, key));}
+    else if(mode == CipherMode.ASCII){showMessage(cipher.encryptAscii(word, key));}
+
 
 
 }
@@ -236,22 +238,20 @@ void handleDecrypt() {
     clearMessage();
     String word = getWord();
     String key = getKey();
-
+    CipherMode mode = getSelectedMode();
     InputValidator valid = new InputValidator();
+    VigenereCipher cipher = new VigenereCipher();
     boolean wordValid = valid.validateWord(word);
     boolean keyValid = valid.validateKey(key);
 
     if(!wordValid && !keyValid){
-        JOptionPane.showMessageDialog(null, "Word and key are empty or invalid!"); return;}
+        JOptionPane.showMessageDialog(this, "Word and key are empty or invalid!"); return;}
     else if(!wordValid){
-        JOptionPane.showMessageDialog(null, "Word is empty or invalid!");    return;}
+        JOptionPane.showMessageDialog(this, "Word is empty or invalid!");    return;}
     else if(!keyValid){
-        JOptionPane.showMessageDialog(null, "Key is empty or invalid!");    return;}
-    else {
-        VigenereCipher cipher = new VigenereCipher();
-        showMessage(cipher.decryptBasic(word, key));
-
-    }
+        JOptionPane.showMessageDialog(this, "Key is empty or invalid!");    return;}
+    else if(mode == CipherMode.BASIC){showMessage(cipher.decryptBasic(word, key));}
+    else if(mode == CipherMode.ASCII){showMessage(cipher.decryptAscii(word, key));}
 
 }
 void showMessage(String text){
@@ -259,7 +259,7 @@ void showMessage(String text){
 }
 
 void clearMessage(){
-    showMessage(" ");
+    showMessage("");
 }
 
 }
