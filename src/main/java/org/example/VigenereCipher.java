@@ -8,7 +8,7 @@ public class VigenereCipher {
     private final int asciiRange = asciiEnd - asciiStart + 1;
 
 
-    private int getAlphabetIndex (char ch){
+    public int getAlphabetIndex (char ch){
         for(int i = 0; i < basicAlphabet.length; i++){
             if (basicAlphabet[i] == ch) {
                 return i;
